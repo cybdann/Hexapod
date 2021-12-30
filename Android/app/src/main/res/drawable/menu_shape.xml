@@ -1,0 +1,11 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <!-- drawable/circle_card_icon.xml -->
+        <shape android:shape="rectangle">
+
+            <solid/>
+            <corners android:radius="100dp" />
+        </shape>
+    </item>
+    <item android:drawable="@drawable/ic_baseline_menu_24"/>
+</layer-list>
