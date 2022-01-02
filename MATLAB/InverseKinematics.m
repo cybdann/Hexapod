@@ -1,13 +1,14 @@
 function angles = InverseKinematics(coords)
+% Values are in radians and mm
 %% Get coordinates
 x = coords(:, 1);
 y = coords(:, 2);
 z = coords(:, 3);
 
 %% Model parameters
-a1 = 36.13;
-a2 = 65.98;
-a3 = 178.03;
+a1 = 37.635;
+a2 = 65.982;
+a3 = 178.766;
 
 theta_0 = [];
 theta_1 = [];

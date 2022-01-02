@@ -1,11 +1,13 @@
-function DrawLegs()
+function DrawLegsDefaultPosition()
+% Default angles = [0, 51.4574, 113.9852]
+
 %% Get legs' points for default leg position
-L1 = ForwardKinematics([30, 45, 90, 0], 0);
-L2 = ForwardKinematics([0, 45, 90, 0], 0);
-L3 = ForwardKinematics([-30, 45, 90, 0], 0);
-R1 = ForwardKinematics([150, 45, 90, 0], 0);
-R2 = ForwardKinematics([180, 45, 90, 0], 0);
-R3 = ForwardKinematics([210, 45, 90, 0], 0);
+L1 = ForwardKinematics([45, 51.4574, 113.9852, 0], 0);
+L2 = ForwardKinematics([0, 51.4574, 113.9852, 0], 0);
+L3 = ForwardKinematics([-45, 51.4574, 113.9852, 0], 0);
+R1 = ForwardKinematics([135, 51.4574, 113.9852, 0], 0);
+R2 = ForwardKinematics([180, 51.4574, 113.9852, 0], 0);
+R3 = ForwardKinematics([225, 51.4574, 113.9852, 0], 0);
 
 %% Draw legs
 figure('NumberTitle', 'off', 'Name', 'Legs Default Position');

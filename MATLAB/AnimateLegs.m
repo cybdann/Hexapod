@@ -1,7 +1,4 @@
-function AnimateLegs()
-coords = SemiCircle(50, 92.73, 50, 50);
-% Calculate angles for joints
-angles = InverseKinematics(coords);
+function AnimateLegs(angles)
 %% Get angles from generated path
 theta0 = angles(:, 1);
 theta1 = angles(:, 2);
@@ -64,8 +61,6 @@ for full_cycle = 1 : 10
     for p = 1 : 4 : size(R1, 1)
         
         for i = 1 : 3
-            hold(frames1(i), 'on');
-            
             leg = cell2mat(cycle1(i));
             
             for j = 2 : 4
@@ -74,34 +69,36 @@ for full_cycle = 1 : 10
                 
                 subplot(3, 2, subplts1(i));
                 plot3([P1(1) P2(1)], [P1(2) P2(2)], [P1(3) P2(3)]);
-
-                xlabel('X')
-                ylabel('Y')
-                zlabel('Z')           
-                title(titles1(i));
                 
                 if rem(i, 2) == 0
-                    xlim([0, 150]);
+                    xlim([0, 200]);
                 else
-                    xlim([-150, 0]);
+                    xlim([-200, 0]);
                 end
+                ylim([-150, 100]);
+                zlim([-150, 80]);
                 
-                ylim([-150, 150]);
-                zlim([-150, 150]);
+                xlabel('X')
+                ylabel('Y')
+                zlabel('Z')
                 
+                title(titles1(i));
+                grid on;
+                
+                hold(frames1(i), 'on');
+              
             end
+            hold(frames1(i), 'off');
+            
             view(0, 0);
             pause(0.001);
-            delete(findobj(gca,'Type','line'))
         end
         
     end
     
-    for p = 1 : 4 : size(R1, 1)
-   
+    for p = 1 : 4 : size(R2, 1)
+        
         for i = 1 : 3
-            hold(frames2(i), 'on');
-            
             leg = cell2mat(cycle2(i));
             
             for j = 2 : 4
@@ -110,25 +107,29 @@ for full_cycle = 1 : 10
                 
                 subplot(3, 2, subplts2(i));
                 plot3([P1(1) P2(1)], [P1(2) P2(2)], [P1(3) P2(3)]);
-
-                xlabel('X')
-                ylabel('Y')
-                zlabel('Z')           
-                title(titles1(i));
                 
                 if rem(i, 2) == 0
-                    xlim([0, 150]);
+                    xlim([0, 200]);
                 else
-                    xlim([-150, 0]);
+                    xlim([-200, 0]);
                 end
+                ylim([-150, 100]);
+                zlim([-150, 80]);
                 
-                ylim([-150, 150]);
-                zlim([-150, 150]);
+                xlabel('X')
+                ylabel('Y')
+                zlabel('Z')
                 
+                title(titles2(i));
+                grid on;
+                
+                hold(frames2(i), 'on');
+              
             end
+            hold(frames2(i), 'off');
+            
             view(0, 0);
             pause(0.001);
-            delete(findobj(gca,'Type','line'))
         end
         
     end

@@ -1,7 +1,7 @@
 function points = ForwardKinematics(angles, d)
-% Starting point
-P0 = [0; 0; 0; 1];
+P0 = [0; 0; 0; 1]; % Starting point
 
+%% Get joint angles
 theta0 = angles(:, 1);
 theta1 = angles(:, 2);
 theta2 = angles(:, 3);
