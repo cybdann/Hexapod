@@ -1,7 +1,7 @@
-function DrawLegForEndEffector(coords)
+function DrawLegForEndEffector(coords, leg)
 %% Get legs points for default leg position
 angles = InverseKinematics([161.216, 0, -107]);
-leg = ForwardKinematics(angles, zeros(1, size(angles(:, 1), 1)));
+leg = ForwardKinematics(angles, zeros(1, size(angles(:, 1), 1)), leg);
 
 %% Draw legs
 figure('NumberTitle', 'off', 'Name', 'Leg Default Position');

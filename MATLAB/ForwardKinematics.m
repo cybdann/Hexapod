@@ -1,5 +1,22 @@
-function points = ForwardKinematics(angles, d)
+function points = ForwardKinematics(angles, d, leg)
 P0 = [0; 0; 0; 1]; % Starting point
+
+%% Calculate for given leg
+if leg == "L1"
+    offset = 45;
+elseif leg == "L2"
+    offset = 0;
+elseif leg == "L3"
+    offset = -45;
+elseif leg == "R1"
+    offset = 135;
+elseif leg == "R2"
+    offset = 180;
+elseif leg == "R3"
+    offset = 225;
+else
+    offset = 0;
+end
 
 %% Get joint angles
 theta0 = angles(:, 1);
@@ -49,10 +66,10 @@ A4 = @(d) [1 0 0 d4;
 points = [];
 
 for i = 1 : size(theta0, 1)
-P1 = A1(theta0(i)) * P0;
-P2 = A1(theta0(i)) * A2(theta1(i)) * P0;
-P3 = A1(theta0(i)) * A2(theta1(i)) * A3(theta2(i)) * P0;
-P4 = A1(theta0(i)) * A2(theta1(i)) * A3(theta2(i)) * A4(d(i)) * P0;
+P1 = A1(theta0(i) + offset) * P0;
+P2 = A1(theta0(i) + offset) * A2(theta1(i)) * P0;
+P3 = A1(theta0(i) + offset) * A2(theta1(i)) * A3(theta2(i)) * P0;
+P4 = A1(theta0(i) + offset) * A2(theta1(i)) * A3(theta2(i)) * A4(d(i)) * P0;
 
 points = [points; P1, P2, P3, P4];
 end

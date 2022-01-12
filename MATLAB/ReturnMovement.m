@@ -1,8 +1,8 @@
-function coordsR = ReturnMovement(steps, last_pos)
+function coordsR = ReturnMovement(steps, last_pos, leg)
 % Values are in mm
 % Default angles = [0, 51.4574, 113.9852]
 %% Straight line to default position
-def_pos = ForwardKinematics([0, 51.4574, 113.9852, 0], 0);
+def_pos = ForwardKinematics([0, 51.4574, 113.9852, 0], 0, leg);
 
 l = last_pos(1) - def_pos(1, 4);
 m = last_pos(2) - def_pos(2, 4);

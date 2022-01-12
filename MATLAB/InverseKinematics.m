@@ -24,7 +24,12 @@ for i = 1 : size(x, 1)
     phi2 = rad2deg(acos((a3^2 - a2^2 - r3^2)/(-2 * a2 * r3)));
     phi3 = rad2deg(acos((r3^2 - a2^2 - a3^2)/(-2 * a2 * a3)));
     
-    theta_0 = [theta_0, rad2deg(atan(y(i)/x(i)))];
+    if x(i) < 0
+        theta_0 = [theta_0, 180 + rad2deg(atan(y(i)/x(i)))];
+    else
+        theta_0 = [theta_0, rad2deg(atan(y(i)/x(i)))];
+    end 
+    
     theta_1 = [theta_1, phi2 + phi1]; 
     theta_2 = [theta_2, 180 - phi3]; 
 end

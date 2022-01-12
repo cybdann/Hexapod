@@ -1,4 +1,4 @@
-function DrawLegTrajectory(angles, coords, t)
+function DrawLegTrajectory(angles, coords, t, leg)
 %% Figure intialization
 figure('NumberTitle', 'off', 'Name', 'Leg Trajectory');
 
@@ -10,7 +10,8 @@ P0 = [0, 0, 0, 1];
 joint_coords = [];
 
 for i = 1 : size(angles, 1)
-    points = ForwardKinematics(angles(i, :), zeros(1, size(angles(i, 1), 1)));
+    % No leg offset if the angles are already calcualted
+    points = ForwardKinematics(angles(i, :), zeros(1, size(angles(i, 1), 1)), "def");
     P1 = points(:, 1);
     P2 = points(:, 2);
     P3 = points(:, 3);
@@ -24,9 +25,7 @@ for i = 1 : size(angles, 1)
     xlabel('X')
     ylabel('Y')
     zlabel('Z')
-    
-    ylim([-150, 100]);
-    xlim([0, 250]);
+
     zlim([-150, 80]);
     
     title(t);
@@ -61,11 +60,12 @@ end
 answer = menu('Return to default position?', 'Yes', 'No');
 
 if answer == 1
-        coordsR = ReturnMovement(size(angles, 1), [P4(1), P4(2), P4(3)]);
+        coordsR = ReturnMovement(size(angles, 1), [P4(1), P4(2), P4(3)], leg);
         angles = InverseKinematics(coordsR);
         
         for i = 1 : size(angles, 1)
-            points = ForwardKinematics(angles(i, :), zeros(1, size(angles(i, 1), 1)));
+            % No leg offset if the angles are already calcualted
+            points = ForwardKinematics(angles(i, :), zeros(1, size(angles(i, 1), 1)), "def");
             P1 = points(:, 1);
             P2 = points(:, 2);
             P3 = points(:, 3);
@@ -79,9 +79,7 @@ if answer == 1
             xlabel('X')
             ylabel('Y')
             zlabel('Z')
-    
-            ylim([-150, 100]);
-            xlim([0, 250]);
+            
             zlim([-150, 80]);
     
             title(t);
