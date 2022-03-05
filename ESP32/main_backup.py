@@ -1,4 +1,4 @@
-from locomotion import Locomotion
+from hexapod import Hexapod
 from umqttsimple import MQTTClient
 from machine import I2C
 from machine import Pin
@@ -45,15 +45,15 @@ def sub_cb(topic, msg):
         # Check for right joystick axis and tripod gait
         if topic == b'R' and Hexapod.gait == b'TR':
             if msg[3] == 44:
-                Hexapod.tripod(rx=msg[:3], ry=msg[4:])
+                Hexapod.gait_tripod(rx=msg[:3], ry=msg[4:])
             else:
-                Hexapod.tripod(rx=msg[:4], ry=msg[5:])
+                Hexapod.gait_tripod(rx=msg[:4], ry=msg[5:])
         # Check for right joystick axis and metachronal gait
         elif topic == b'R' and Hexapod.gait == b'MT':
             if msg[3] == 44:
-                Hexapod.metachronal(rx=msg[:3], ry=msg[4:])
+                Hexapod.gait_metachronal(rx=msg[:3], ry=msg[4:])
             else:
-                Hexapod.metachronal(rx=msg[:4], ry=msg[5:])
+                Hexapod.gait_metachronal(rx=msg[:4], ry=msg[5:])
 
         # Check for left joystick axis
         elif topic == b'L':
@@ -112,7 +112,7 @@ def restart_and_reconnect():
 Pin(15, Pin.OUT).value(1)   # Power PCA9685
 
 # Hexapod control
-Hexapod = Locomotion()
+Hexapod = Hexapod()
 Hexapod.set_default_position()
 
 # Connect to MQTT network before looping

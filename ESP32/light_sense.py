@@ -23,28 +23,13 @@ topics_sub = [b'COMM', b'DISP']
 # Display light level with LEDs
 def show_light_level(level):
     if level < 1024:
-        pwm.duty(index=0, value=(4*level - 1))
-        pwm.duty(index=1, value=0)
-        pwm.duty(index=2, value=0)
-        pwm.duty(index=3, value=0)
+        LED[0].value(0), LED[1].value(0), LED[2].value(0)
     elif 1024 < level < 2048:
-        # TODO: Map level value
-        pwm.duty(index=0, value=4095)
-        pwm.duty(index=1, value=(4*level - 1))
-        pwm.duty(index=2, value=0)
-        pwm.duty(index=3, value=0)
+        LED[0].value(1), LED[1].value(0), LED[2].value(0)
     elif 2048 < level < 3072:
-        # TODO: Map level value
-        pwm.duty(index=0, value=4095)
-        pwm.duty(index=1, value=4095)
-        pwm.duty(index=2, value=(4*level - 1))
-        pwm.duty(index=3, value=0)
+        LED[0].value(1), LED[1].value(1), LED[2].value(0)
     else:
-        # TODO: Map level value
-        pwm.duty(index=0, value=4095)
-        pwm.duty(index=1, value=4095)
-        pwm.duty(index=2, value=4095)
-        pwm.duty(index=3, value=(4*level - 1))
+        LED[0].value(1), LED[1].value(1), LED[2].value(1)
 
 
 # Hide light level with LEDs
@@ -103,13 +88,6 @@ except OSError as e:
 # Debugging variables
 VCC = Pin(14, Pin.OUT)
 VCC.value(1)
-
-# Init I2C protocol
-i2c = I2C(0, scl=Pin(18), sda=Pin(19))
-
-# Init pwm board
-pwm = PCA9685(address=0x41, i2c=i2c)
-pwm.freq(freq=60)
 
 LED = [Pin(12, Pin.OUT), Pin(27, Pin.OUT), Pin(25, Pin.OUT)]
 

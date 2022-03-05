@@ -1,4 +1,4 @@
-from locomotion import Locomotion
+from hexapod import Hexapod
 from umqttsimple import MQTTClient
 from machine import I2C
 from machine import Pin
@@ -21,15 +21,17 @@ def control_thread():
             # Check for right joystick axis and tripod gait
             if last_topic == b'R' and Hexapod.gait == b'TR':
                 if last_msg[3] == 44:
-                    Hexapod.tripod(rx=last_msg[:3], ry=last_msg[4:])
+                    Hexapod.gait_tripod(rx=last_msg[:3], ry=last_msg[4:])
+                    # print("RX=" + str(last_msg[:3]) + "| RY=" + str(last_msg[4:]))
                 else:
-                    Hexapod.tripod(rx=last_msg[:4], ry=last_msg[5:])
+                    Hexapod.gait_tripod(rx=last_msg[:4], ry=last_msg[5:])
+                    # print("RX=" + str(last_msg[:4]) + "| RY=" + str(last_msg[5:]))
             # Check for right joystick axis and metachronal gait
             elif last_topic == b'R' and Hexapod.gait == b'MT':
                 if msg[3] == 44:
-                    Hexapod.metachronal(rx=last_msg[:3], ry=last_msg[4:])
+                    Hexapod.gait_metachronal(rx=last_msg[:3], ry=last_msg[4:])
                 else:
-                    Hexapod.metachronal(rx=last_msg[:4], ry=last_msg[5:])
+                    Hexapod.gait_metachronal(rx=last_msg[:4], ry=last_msg[5:])
 
             # Check for left joystick axis
             elif last_topic == b'L':
@@ -55,16 +57,19 @@ def sub_cb(topic, msg):
     # Check for mode selection
     if topic == b'MODE':
         Hexapod.mode = msg
+        print("Mode: " + str(msg))
         return
 
     # Check for gait selection
     if topic == b'GAIT':
         Hexapod.gait = msg
+        print("Gait: " + str(msg))
         return
 
     # Check for incoming status messages
     if topic[0] == 83:
         Hexapod.set_status(topic)
+        print("Status: " + str(msg))
         return
 
     # Control Mode B is selected
@@ -124,11 +129,8 @@ topics_sub = [joysticks, dPads, face_buttons, statuses]
 last_topic = None
 last_msg = None
 
-# Debugging variables
-Pin(15, Pin.OUT).value(1)  # Power PCA9685
-
 # Hexapod control
-Hexapod = Locomotion()
+Hexapod = Hexapod()
 Hexapod.set_default_position()
 
 # Connect to MQTT network before looping
@@ -138,6 +140,9 @@ try:
     client = connect_and_subscribe()
 except OSError as e:
     restart_and_reconnect()
+
+# Send Hexapod READY msg to broker
+client.publish("READY", "1", retain=True)
 
 # Init robot control thread (Core 2)
 c_thread = _thread.start_new_thread(control_thread, ())
