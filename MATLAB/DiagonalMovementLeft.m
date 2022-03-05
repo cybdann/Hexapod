@@ -1,4 +1,4 @@
-function coordsH = HorizontalMovement(steps, x_radius, z_radius, leg)
+function coordsD = DiagonalMovementLeft(steps, x_radius, y_radius, z_radius, leg)
 % Values are in radians and mm
 % Default position = [95, 95, -115]
 %% Calculate for given leg
@@ -21,29 +21,32 @@ end
 %% Semi circle parameters
 halfsteps = round(steps/2);
 step_angle = pi / halfsteps;
-coordsH = [];
+coordsD = [];
 
 %% Start coordinates
 x_start = 95 * cos(deg2rad(offset));
 y_start = 95 * sin(deg2rad(offset));
 z_start = -150;
 
-%% Straight line - X changes
+%% Diagonal line - X, Y changes
 for i = 1 : halfsteps
-    coordsH = [coordsH; [x_start + x_radius - i*x_radius*2/(halfsteps), y_start, z_start]];
+    coordsD = [coordsD; [x_start + (x_radius - i*x_radius*2/(halfsteps)) * cos(deg2rad(135)), ...
+                            y_start + (y_radius - i*y_radius*2/(halfsteps)) * sin(deg2rad(135)),...
+                            z_start]];
 end
 
 %% Semi circle in 3D space
 for i = 1 : halfsteps
     angle = pi - step_angle*i;
-    x = x_radius * cos(angle) + x_start;
+    y = coordsD(halfsteps + 1 - i, 2);
+    x = coordsD(halfsteps + 1 - i, 1);
     z = z_radius * sin(angle) + z_start;
     
-    coordsH = [coordsH; [x, y_start, z]];
+    coordsD = [coordsD; [x, y, z]];
 end
 
 % Start from apoapsis
-coordsH = [coordsH(2 * halfsteps - ceil(halfsteps/2) : 2 * halfsteps, :);
-            coordsH(1: halfsteps, :);           
-            coordsH(halfsteps + 1: 2 * halfsteps - ceil(halfsteps/2) - 1, :)];
+coordsD = [coordsD(2 * halfsteps - ceil(halfsteps/2) : 2 * halfsteps, :);
+            coordsD(1: halfsteps, :);           
+            coordsD(halfsteps + 1: 2 * halfsteps - ceil(halfsteps/2) - 1, :)];
 end

@@ -2,17 +2,17 @@ function points = ForwardKinematics(angles, d, leg)
 P0 = [0; 0; 0; 1]; % Starting point
 
 %% Calculate for given leg
-if leg == "L1"
+if leg == "R1"
     offset = 45;
-elseif leg == "L2"
-    offset = 0;
-elseif leg == "L3"
-    offset = -45;
-elseif leg == "R1"
-    offset = 135;
 elseif leg == "R2"
-    offset = 180;
+    offset = 0;
 elseif leg == "R3"
+    offset = -45;
+elseif leg == "L1"
+    offset = 135;
+elseif leg == "L2"
+    offset = 180;
+elseif leg == "L3"
     offset = 225;
 else
     offset = 0;

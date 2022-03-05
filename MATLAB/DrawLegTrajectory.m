@@ -26,7 +26,7 @@ for i = 1 : size(angles, 1)
     ylabel('Y')
     zlabel('Z')
 
-    zlim([-150, 80]);
+    zlim([-200, 150]);
     
     title(t);
     grid on;
@@ -80,7 +80,7 @@ if answer == 1
             ylabel('Y')
             zlabel('Z')
             
-            zlim([-150, 80]);
+            zlim([-200, 150]);
     
             title(t);
             grid on;
