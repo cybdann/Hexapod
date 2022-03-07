@@ -1,7 +1,7 @@
 function DrawLegDefaultPosition(leg)
-% Default angles = [0, 51.4574, 113.9852]
+% Default angles = [0, 45, 125]
 %% Get legs points for default leg position
-leg = ForwardKinematics([0, 51.4574, 113.9852, 0], 0, leg);
+leg = ForwardKinematics([0, 45, 125, 0], 0, leg);
 
 %% Draw legs
 figure('NumberTitle', 'off', 'Name', 'Leg Default Position');
@@ -10,7 +10,7 @@ figure('NumberTitle', 'off', 'Name', 'Leg Default Position');
         P1 = leg(:, j-1);
         P2 = leg(:, j);
         
-        plot3([P1(1) P2(1)], [P1(2) P2(2)], [P1(3) P2(3)]);
+        plot3([P1(1) P2(1)], [P1(2) P2(2)], [P1(3) P2(3)], 'LineWidth', 4);
         grid on;
         hold on;
         xlabel('X')

@@ -1,5 +1,5 @@
 function coordsE = ElevationMovement(steps, z_radius, leg)
-% Default position = [95, 95, -115]
+% Default position = [128.8, 128.8, -158.6]
 %% Calculate for given leg
 if leg == "R1"
     offset = 45;
@@ -22,9 +22,9 @@ halfsteps = round(steps/2);
 coordsE = [];
 
 %% Start coordinates
-x_start = 95 * cos(deg2rad(offset));
-y_start = 95 * sin(deg2rad(offset));
-z_start = -150;
+x_start = 128.8 * cos(deg2rad(offset));
+y_start = 128.8 * sin(deg2rad(offset));
+z_start = -158.6;
 
 %% Straight line - Z changes
 for i = 1 : halfsteps

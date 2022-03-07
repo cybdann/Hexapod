@@ -1,4 +1,5 @@
 function ExportLegAngles(angles, file_name, func_name)
+% Current default angles = [0, 20.5, 99.5]
 %% Ceil values for Python int format
 angles = ceil(angles);
 
@@ -6,38 +7,38 @@ angles = ceil(angles);
 %R1 => COXA offset -45
 anglesR1 = angles(:, 1:3) + 90;
 anglesR1(:, 1) = anglesR1(:, 1) - 45;
-anglesR1(:, 2) = anglesR1(:, 2) - 25;
-anglesR1(:, 3) = anglesR1(:, 3) - 115;
+anglesR1(:, 2) = anglesR1(:, 2) - 20.5;
+anglesR1(:, 3) = anglesR1(:, 3) - 99.5;
 
 %R2 - point of reference => COXA offset -0
 anglesR2 = angles(:, 4:6) + 90;
 anglesR2(:, 1) = anglesR2(:, 1) - 0;
-anglesR2(:, 2) = anglesR2(:, 2) - 25;
-anglesR2(:, 3) = anglesR2(:, 3) - 115;
+anglesR2(:, 2) = anglesR2(:, 2) - 20.5;
+anglesR2(:, 3) = anglesR2(:, 3) - 99.5;
 
 %R3 => COXA offset +45
 anglesR3 = angles(:, 7:9) + 90;
 anglesR3(:, 1) = anglesR3(:, 1) + 45;
-anglesR3(:, 2) = anglesR3(:, 2) - 25;
-anglesR3(:, 3) = anglesR3(:, 3) - 115;
+anglesR3(:, 2) = anglesR3(:, 2) - 20.5;
+anglesR3(:, 3) = anglesR3(:, 3) - 99.5;
 
 %L1
 anglesL1 = angles(:, 10:12) - 90;
 anglesL1(:, 1) = anglesL1(:, 1) + 45;
-anglesL1(:, 2) = 25 - anglesL1(:, 2);
-anglesL1(:, 3) = 115 - anglesL1(:, 3);
+anglesL1(:, 2) = 20.5 - anglesL1(:, 2);
+anglesL1(:, 3) = 99.5 - anglesL1(:, 3);
 
 %L2
 anglesL2 = angles(:, 13:15) - 90;
 anglesL2(:, 1) = anglesL2(:, 1) + 0;
-anglesL2(:, 2) = 25 - anglesL2(:, 2);
-anglesL2(:, 3) = 115 - anglesL2(:, 3);
+anglesL2(:, 2) = 20.5 - anglesL2(:, 2);
+anglesL2(:, 3) = 99.5 - anglesL2(:, 3);
 
 %L3
 anglesL3 = angles(:, 16:18) - 90;
 anglesL3(:, 1) = anglesL3(:, 1) - 45;
-anglesL3(:, 2) = 25 - anglesL3(:, 2);
-anglesL3(:, 3) = 115 - anglesL3(:, 3);
+anglesL3(:, 2) = 20.5 - anglesL3(:, 2);
+anglesL3(:, 3) = 99.5 - anglesL3(:, 3);
 
 %% Python file formating
 strR1C = func_name + "_R1C = (";
