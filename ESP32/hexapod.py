@@ -47,9 +47,9 @@ def rot_ind(up, i):
         i -= 1
 
     if i == -1:
-        i = Hexapod.path_samples_2 - 1
-    elif i == Hexapod.path_samples_2:
         i = 0
+    elif i == Hexapod.path_samples_2:
+        i = 49
 
     return i
 
@@ -133,16 +133,15 @@ class Hexapod:
 
         # Locomotion indexer
         # Tripod cycle indexers
-        self.trc1 = 0
-        self.trc2 = ceil(self.path_samples_1/2)
+        self.trc1_ind = 0
+        self.trc2_ind = ceil(self.path_samples_1 / 2)
 
         # Metachronal cycle indexers
-        self.mtc1 = 0
-        self.mtc1 = ceil(self.path_samples_1/2)
+        self.mtc1_ind = 0
+        self.mtc2_ind = ceil(self.path_samples_1 / 2)
 
         # Rotation indexer
-        # Elevation indexer
-        self.rte = ceil
+        self.rt_ind = ceil(self.path_samples_2 / 2)
 
     def set_status(self, status):
         # SIT/UP button
@@ -309,8 +308,8 @@ class Hexapod:
         # Joystick isn't moved or done walk
         if dry == 0.0 and drx == 0.0:
             # Reset indexers and set Hexapod into normal position
-            self.trc1 = 0
-            self.trc2 = ceil(len(gaits.vm_R1C) / 2)
+            self.trc1_ind = 0
+            self.trc2_ind = ceil(len(gaits.vm_R1C) / 2)
             self.set_default_position()
             return
 
@@ -346,68 +345,68 @@ class Hexapod:
     def vertical_movement(self, dry, inc):
         # Cycle 1
         # L1
-        self.ls.position(self.L1[0], degrees=(gaits.vm_L1C[self.trc1] + self.L1P_offset[0]))
-        self.ls.position(self.L1[1], degrees=(gaits.vm_L1F[self.trc1] + self.L1P_offset[1]))
-        self.ls.position(self.L1[2], degrees=(gaits.vm_L1T[self.trc1] + self.L1P_offset[2]))
+        self.ls.position(self.L1[0], degrees=(gaits.vm_L1C[self.trc1_ind] + self.L1P_offset[0]))
+        self.ls.position(self.L1[1], degrees=(gaits.vm_L1F[self.trc1_ind] + self.L1P_offset[1]))
+        self.ls.position(self.L1[2], degrees=(gaits.vm_L1T[self.trc1_ind] + self.L1P_offset[2]))
 
         # Save positions
-        self.L1P[0] = gaits.vm_L1C[self.trc1]
-        self.L1P[1] = gaits.vm_L1F[self.trc1]
-        self.L1P[2] = gaits.vm_L1T[self.trc1]
+        self.L1P[0] = gaits.vm_L1C[self.trc1_ind]
+        self.L1P[1] = gaits.vm_L1F[self.trc1_ind]
+        self.L1P[2] = gaits.vm_L1T[self.trc1_ind]
 
         # L3
-        self.ls.position(self.L3[0], degrees=(gaits.vm_L3C[self.trc1] + self.L3P_offset[0]))
-        self.ls.position(self.L3[1], degrees=(gaits.vm_L3F[self.trc1] + self.L3P_offset[1]))
-        self.ls.position(self.L3[2], degrees=(gaits.vm_L3T[self.trc1] + self.L3P_offset[2]))
+        self.ls.position(self.L3[0], degrees=(gaits.vm_L3C[self.trc1_ind] + self.L3P_offset[0]))
+        self.ls.position(self.L3[1], degrees=(gaits.vm_L3F[self.trc1_ind] + self.L3P_offset[1]))
+        self.ls.position(self.L3[2], degrees=(gaits.vm_L3T[self.trc1_ind] + self.L3P_offset[2]))
 
         # Save positions
-        self.L3P[0] = gaits.vm_L3C[self.trc1]
-        self.L3P[1] = gaits.vm_L3F[self.trc1]
-        self.L3P[2] = gaits.vm_L3T[self.trc1]
+        self.L3P[0] = gaits.vm_L3C[self.trc1_ind]
+        self.L3P[1] = gaits.vm_L3F[self.trc1_ind]
+        self.L3P[2] = gaits.vm_L3T[self.trc1_ind]
 
         # R2
-        self.rs.position(self.R2[0], degrees=(gaits.vm_R2C[self.trc1] + self.R2P_offset[0]))
-        self.rs.position(self.R2[1], degrees=(gaits.vm_R2F[self.trc1] + self.R2P_offset[1]))
-        self.rs.position(self.R2[2], degrees=(gaits.vm_R2T[self.trc1] + self.R2P_offset[2]))
+        self.rs.position(self.R2[0], degrees=(gaits.vm_R2C[self.trc1_ind] + self.R2P_offset[0]))
+        self.rs.position(self.R2[1], degrees=(gaits.vm_R2F[self.trc1_ind] + self.R2P_offset[1]))
+        self.rs.position(self.R2[2], degrees=(gaits.vm_R2T[self.trc1_ind] + self.R2P_offset[2]))
 
         # Save positions
-        self.R2P[0] = gaits.vm_R2C[self.trc1]
-        self.R2P[1] = gaits.vm_R2F[self.trc1]
-        self.R2P[2] = gaits.vm_R2T[self.trc1]
+        self.R2P[0] = gaits.vm_R2C[self.trc1_ind]
+        self.R2P[1] = gaits.vm_R2F[self.trc1_ind]
+        self.R2P[2] = gaits.vm_R2T[self.trc1_ind]
 
         # Cycle 2
         # R1
-        self.rs.position(self.R1[0], degrees=(gaits.vm_R1C[self.trc2] + self.R1P_offset[0]))
-        self.rs.position(self.R1[1], degrees=(gaits.vm_R1F[self.trc2] + self.R1P_offset[1]))
-        self.rs.position(self.R1[2], degrees=(gaits.vm_R1T[self.trc2] + self.R1P_offset[2]))
+        self.rs.position(self.R1[0], degrees=(gaits.vm_R1C[self.trc2_ind] + self.R1P_offset[0]))
+        self.rs.position(self.R1[1], degrees=(gaits.vm_R1F[self.trc2_ind] + self.R1P_offset[1]))
+        self.rs.position(self.R1[2], degrees=(gaits.vm_R1T[self.trc2_ind] + self.R1P_offset[2]))
 
         # Save positions
-        self.R1P[0] = gaits.vm_R1C[self.trc2]
-        self.R1P[1] = gaits.vm_R1F[self.trc2]
-        self.R1P[2] = gaits.vm_R1T[self.trc2]
+        self.R1P[0] = gaits.vm_R1C[self.trc2_ind]
+        self.R1P[1] = gaits.vm_R1F[self.trc2_ind]
+        self.R1P[2] = gaits.vm_R1T[self.trc2_ind]
 
         # R3
-        self.rs.position(self.R3[0], degrees=(gaits.vm_R3C[self.trc2] + self.R3P_offset[0]))
-        self.rs.position(self.R3[1], degrees=(gaits.vm_R3F[self.trc2] + self.R3P_offset[1]))
-        self.rs.position(self.R3[2], degrees=(gaits.vm_R3T[self.trc2] + self.R3P_offset[2]))
+        self.rs.position(self.R3[0], degrees=(gaits.vm_R3C[self.trc2_ind] + self.R3P_offset[0]))
+        self.rs.position(self.R3[1], degrees=(gaits.vm_R3F[self.trc2_ind] + self.R3P_offset[1]))
+        self.rs.position(self.R3[2], degrees=(gaits.vm_R3T[self.trc2_ind] + self.R3P_offset[2]))
 
         # Save positions
-        self.R3P[0] = gaits.vm_R3C[self.trc2]
-        self.R3P[1] = gaits.vm_R3F[self.trc2]
-        self.R3P[2] = gaits.vm_R3T[self.trc2]
+        self.R3P[0] = gaits.vm_R3C[self.trc2_ind]
+        self.R3P[1] = gaits.vm_R3F[self.trc2_ind]
+        self.R3P[2] = gaits.vm_R3T[self.trc2_ind]
 
         # L2
-        self.ls.position(self.L2[0], degrees=(gaits.vm_L2C[self.trc2] + self.L2P_offset[0]))
-        self.ls.position(self.L2[1], degrees=(gaits.vm_L2F[self.trc2] + self.L2P_offset[1]))
-        self.ls.position(self.L2[2], degrees=(gaits.vm_L2T[self.trc2] + self.L2P_offset[2]))
+        self.ls.position(self.L2[0], degrees=(gaits.vm_L2C[self.trc2_ind] + self.L2P_offset[0]))
+        self.ls.position(self.L2[1], degrees=(gaits.vm_L2F[self.trc2_ind] + self.L2P_offset[1]))
+        self.ls.position(self.L2[2], degrees=(gaits.vm_L2T[self.trc2_ind] + self.L2P_offset[2]))
 
         # Save positions
-        self.L2P[0] = gaits.vm_L2C[self.trc2]
-        self.L2P[1] = gaits.vm_L2F[self.trc2]
-        self.L2P[2] = gaits.vm_L2T[self.trc2]
+        self.L2P[0] = gaits.vm_L2C[self.trc2_ind]
+        self.L2P[1] = gaits.vm_L2F[self.trc2_ind]
+        self.L2P[2] = gaits.vm_L2T[self.trc2_ind]
 
-        self.trc1 = loc_ind(inc, self.trc1)
-        self.trc2 = loc_ind(inc, self.trc2)
+        self.trc1_ind = loc_ind(inc, self.trc1_ind)
+        self.trc2_ind = loc_ind(inc, self.trc2_ind)
 
         # Delay between gait cycles with speed factor got from joystick
         sleep_ms(int(5 * (2.0 - dry)))
@@ -415,68 +414,68 @@ class Hexapod:
     def horizontal_movement(self, drx, inc):
         # Cycle 1
         # L1
-        self.ls.position(self.L1[0], degrees=(gaits.hm_L1C[self.trc1] + self.L1P_offset[0]))
-        self.ls.position(self.L1[1], degrees=(gaits.hm_L1F[self.trc1] + self.L1P_offset[1]))
-        self.ls.position(self.L1[2], degrees=(gaits.hm_L1T[self.trc1] + self.L1P_offset[2]))
+        self.ls.position(self.L1[0], degrees=(gaits.hm_L1C[self.trc1_ind] + self.L1P_offset[0]))
+        self.ls.position(self.L1[1], degrees=(gaits.hm_L1F[self.trc1_ind] + self.L1P_offset[1]))
+        self.ls.position(self.L1[2], degrees=(gaits.hm_L1T[self.trc1_ind] + self.L1P_offset[2]))
 
         # Save positions
-        self.L1P[0] = gaits.hm_L1C[self.trc1]
-        self.L1P[1] = gaits.hm_L1F[self.trc1]
-        self.L1P[2] = gaits.hm_L1T[self.trc1]
+        self.L1P[0] = gaits.hm_L1C[self.trc1_ind]
+        self.L1P[1] = gaits.hm_L1F[self.trc1_ind]
+        self.L1P[2] = gaits.hm_L1T[self.trc1_ind]
 
         # L3
-        self.ls.position(self.L3[0], degrees=(gaits.hm_L3C[self.trc1] + self.L3P_offset[0]))
-        self.ls.position(self.L3[1], degrees=(gaits.hm_L3F[self.trc1] + self.L3P_offset[1]))
-        self.ls.position(self.L3[2], degrees=(gaits.hm_L3T[self.trc1] + self.L3P_offset[2]))
+        self.ls.position(self.L3[0], degrees=(gaits.hm_L3C[self.trc1_ind] + self.L3P_offset[0]))
+        self.ls.position(self.L3[1], degrees=(gaits.hm_L3F[self.trc1_ind] + self.L3P_offset[1]))
+        self.ls.position(self.L3[2], degrees=(gaits.hm_L3T[self.trc1_ind] + self.L3P_offset[2]))
 
         # Save positions
-        self.L3P[0] = gaits.hm_L3C[self.trc1]
-        self.L3P[1] = gaits.hm_L3F[self.trc1]
-        self.L3P[2] = gaits.hm_L3T[self.trc1]
+        self.L3P[0] = gaits.hm_L3C[self.trc1_ind]
+        self.L3P[1] = gaits.hm_L3F[self.trc1_ind]
+        self.L3P[2] = gaits.hm_L3T[self.trc1_ind]
 
         # R2
-        self.rs.position(self.R2[0], degrees=(gaits.hm_R2C[self.trc1] + self.R2P_offset[0]))
-        self.rs.position(self.R2[1], degrees=(gaits.hm_R2F[self.trc1] + self.R2P_offset[1]))
-        self.rs.position(self.R2[2], degrees=(gaits.hm_R2T[self.trc1] + self.R2P_offset[2]))
+        self.rs.position(self.R2[0], degrees=(gaits.hm_R2C[self.trc1_ind] + self.R2P_offset[0]))
+        self.rs.position(self.R2[1], degrees=(gaits.hm_R2F[self.trc1_ind] + self.R2P_offset[1]))
+        self.rs.position(self.R2[2], degrees=(gaits.hm_R2T[self.trc1_ind] + self.R2P_offset[2]))
 
         # Save positions
-        self.R2P[0] = gaits.hm_R2C[self.trc1]
-        self.R2P[1] = gaits.hm_R2F[self.trc1]
-        self.R2P[2] = gaits.hm_R2T[self.trc1]
+        self.R2P[0] = gaits.hm_R2C[self.trc1_ind]
+        self.R2P[1] = gaits.hm_R2F[self.trc1_ind]
+        self.R2P[2] = gaits.hm_R2T[self.trc1_ind]
 
         # Cycle 2
         # R1
-        self.rs.position(self.R1[0], degrees=(gaits.hm_R1C[self.trc2] + self.R1P_offset[0]))
-        self.rs.position(self.R1[1], degrees=(gaits.hm_R1F[self.trc2] + self.R1P_offset[1]))
-        self.rs.position(self.R1[2], degrees=(gaits.hm_R1T[self.trc2] + self.R1P_offset[2]))
+        self.rs.position(self.R1[0], degrees=(gaits.hm_R1C[self.trc2_ind] + self.R1P_offset[0]))
+        self.rs.position(self.R1[1], degrees=(gaits.hm_R1F[self.trc2_ind] + self.R1P_offset[1]))
+        self.rs.position(self.R1[2], degrees=(gaits.hm_R1T[self.trc2_ind] + self.R1P_offset[2]))
 
         # Save positions
-        self.R1P[0] = gaits.hm_R1C[self.trc2]
-        self.R1P[1] = gaits.hm_R1F[self.trc2]
-        self.R1P[2] = gaits.hm_R1T[self.trc2]
+        self.R1P[0] = gaits.hm_R1C[self.trc2_ind]
+        self.R1P[1] = gaits.hm_R1F[self.trc2_ind]
+        self.R1P[2] = gaits.hm_R1T[self.trc2_ind]
 
         # R3
-        self.rs.position(self.R3[0], degrees=(gaits.hm_R3C[self.trc2] + self.R3P_offset[0]))
-        self.rs.position(self.R3[1], degrees=(gaits.hm_R3F[self.trc2] + self.R3P_offset[1]))
-        self.rs.position(self.R3[2], degrees=(gaits.hm_R3T[self.trc2] + self.R3P_offset[2]))
+        self.rs.position(self.R3[0], degrees=(gaits.hm_R3C[self.trc2_ind] + self.R3P_offset[0]))
+        self.rs.position(self.R3[1], degrees=(gaits.hm_R3F[self.trc2_ind] + self.R3P_offset[1]))
+        self.rs.position(self.R3[2], degrees=(gaits.hm_R3T[self.trc2_ind] + self.R3P_offset[2]))
 
         # Save positions
-        self.R3P[0] = gaits.hm_R3C[self.trc2]
-        self.R3P[1] = gaits.hm_R3F[self.trc2]
-        self.R3P[2] = gaits.hm_R3T[self.trc2]
+        self.R3P[0] = gaits.hm_R3C[self.trc2_ind]
+        self.R3P[1] = gaits.hm_R3F[self.trc2_ind]
+        self.R3P[2] = gaits.hm_R3T[self.trc2_ind]
 
         # L2
-        self.ls.position(self.L2[0], degrees=(gaits.hm_L2C[self.trc2] + self.L2P_offset[0]))
-        self.ls.position(self.L2[1], degrees=(gaits.hm_L2F[self.trc2] + self.L2P_offset[1]))
-        self.ls.position(self.L2[2], degrees=(gaits.hm_L2T[self.trc2] + self.L2P_offset[2]))
+        self.ls.position(self.L2[0], degrees=(gaits.hm_L2C[self.trc2_ind] + self.L2P_offset[0]))
+        self.ls.position(self.L2[1], degrees=(gaits.hm_L2F[self.trc2_ind] + self.L2P_offset[1]))
+        self.ls.position(self.L2[2], degrees=(gaits.hm_L2T[self.trc2_ind] + self.L2P_offset[2]))
 
         # Save positions
-        self.L2P[0] = gaits.hm_L2C[self.trc2]
-        self.L2P[1] = gaits.hm_L2F[self.trc2]
-        self.L2P[2] = gaits.hm_L2T[self.trc2]
+        self.L2P[0] = gaits.hm_L2C[self.trc2_ind]
+        self.L2P[1] = gaits.hm_L2F[self.trc2_ind]
+        self.L2P[2] = gaits.hm_L2T[self.trc2_ind]
 
-        self.trc1 = loc_ind(inc, self.trc1)
-        self.trc2 = loc_ind(inc, self.trc2)
+        self.trc1_ind = loc_ind(inc, self.trc1_ind)
+        self.trc2_ind = loc_ind(inc, self.trc2_ind)
 
         # Delay between gait cycles with speed factor got from joystick
         sleep_ms(int(5 * (2.0 - drx)))
@@ -484,68 +483,68 @@ class Hexapod:
     def diagonal_right_movement(self, drx, dry, inc):
         # Cycle 1
         # L1
-        self.ls.position(self.L1[0], degrees=(gaits.dr_L1C[self.trc1] + self.L1P_offset[0]))
-        self.ls.position(self.L1[1], degrees=(gaits.dr_L1F[self.trc1] + self.L1P_offset[1]))
-        self.ls.position(self.L1[2], degrees=(gaits.dr_L1T[self.trc1] + self.L1P_offset[2]))
+        self.ls.position(self.L1[0], degrees=(gaits.dr_L1C[self.trc1_ind] + self.L1P_offset[0]))
+        self.ls.position(self.L1[1], degrees=(gaits.dr_L1F[self.trc1_ind] + self.L1P_offset[1]))
+        self.ls.position(self.L1[2], degrees=(gaits.dr_L1T[self.trc1_ind] + self.L1P_offset[2]))
 
         # Save positions
-        self.L1P[0] = gaits.dr_L1C[self.trc1]
-        self.L1P[1] = gaits.dr_L1F[self.trc1]
-        self.L1P[2] = gaits.dr_L1T[self.trc1]
+        self.L1P[0] = gaits.dr_L1C[self.trc1_ind]
+        self.L1P[1] = gaits.dr_L1F[self.trc1_ind]
+        self.L1P[2] = gaits.dr_L1T[self.trc1_ind]
 
         # L3
-        self.ls.position(self.L3[0], degrees=(gaits.dr_L3C[self.trc1] + self.L3P_offset[0]))
-        self.ls.position(self.L3[1], degrees=(gaits.dr_L3F[self.trc1] + self.L3P_offset[1]))
-        self.ls.position(self.L3[2], degrees=(gaits.dr_L3T[self.trc1] + self.L3P_offset[2]))
+        self.ls.position(self.L3[0], degrees=(gaits.dr_L3C[self.trc1_ind] + self.L3P_offset[0]))
+        self.ls.position(self.L3[1], degrees=(gaits.dr_L3F[self.trc1_ind] + self.L3P_offset[1]))
+        self.ls.position(self.L3[2], degrees=(gaits.dr_L3T[self.trc1_ind] + self.L3P_offset[2]))
 
         # Save positions
-        self.L3P[0] = gaits.dr_L3C[self.trc1]
-        self.L3P[1] = gaits.dr_L3F[self.trc1]
-        self.L3P[2] = gaits.dr_L3T[self.trc1]
+        self.L3P[0] = gaits.dr_L3C[self.trc1_ind]
+        self.L3P[1] = gaits.dr_L3F[self.trc1_ind]
+        self.L3P[2] = gaits.dr_L3T[self.trc1_ind]
 
         # R2
-        self.rs.position(self.R2[0], degrees=(gaits.dr_R2C[self.trc1] + self.R2P_offset[0]))
-        self.rs.position(self.R2[1], degrees=(gaits.dr_R2F[self.trc1] + self.R2P_offset[1]))
-        self.rs.position(self.R2[2], degrees=(gaits.dr_R2T[self.trc1] + self.R2P_offset[2]))
+        self.rs.position(self.R2[0], degrees=(gaits.dr_R2C[self.trc1_ind] + self.R2P_offset[0]))
+        self.rs.position(self.R2[1], degrees=(gaits.dr_R2F[self.trc1_ind] + self.R2P_offset[1]))
+        self.rs.position(self.R2[2], degrees=(gaits.dr_R2T[self.trc1_ind] + self.R2P_offset[2]))
 
         # Save positions
-        self.R2P[0] = gaits.dr_R2C[self.trc1]
-        self.R2P[1] = gaits.dr_R2F[self.trc1]
-        self.R2P[2] = gaits.dr_R2T[self.trc1]
+        self.R2P[0] = gaits.dr_R2C[self.trc1_ind]
+        self.R2P[1] = gaits.dr_R2F[self.trc1_ind]
+        self.R2P[2] = gaits.dr_R2T[self.trc1_ind]
 
         # Cycle 2
         # R1
-        self.rs.position(self.R1[0], degrees=(gaits.dr_R1C[self.trc2] + self.R1P_offset[0]))
-        self.rs.position(self.R1[1], degrees=(gaits.dr_R1F[self.trc2] + self.R1P_offset[1]))
-        self.rs.position(self.R1[2], degrees=(gaits.dr_R1T[self.trc2] + self.R1P_offset[2]))
+        self.rs.position(self.R1[0], degrees=(gaits.dr_R1C[self.trc2_ind] + self.R1P_offset[0]))
+        self.rs.position(self.R1[1], degrees=(gaits.dr_R1F[self.trc2_ind] + self.R1P_offset[1]))
+        self.rs.position(self.R1[2], degrees=(gaits.dr_R1T[self.trc2_ind] + self.R1P_offset[2]))
 
         # Save positions
-        self.R1P[0] = gaits.dr_R1C[self.trc2]
-        self.R1P[1] = gaits.dr_R1F[self.trc2]
-        self.R1P[2] = gaits.dr_R1T[self.trc2]
+        self.R1P[0] = gaits.dr_R1C[self.trc2_ind]
+        self.R1P[1] = gaits.dr_R1F[self.trc2_ind]
+        self.R1P[2] = gaits.dr_R1T[self.trc2_ind]
 
         # R3
-        self.rs.position(self.R3[0], degrees=(gaits.dr_R3C[self.trc2] + self.R3P_offset[0]))
-        self.rs.position(self.R3[1], degrees=(gaits.dr_R3F[self.trc2] + self.R3P_offset[1]))
-        self.rs.position(self.R3[2], degrees=(gaits.dr_R3T[self.trc2] + self.R3P_offset[2]))
+        self.rs.position(self.R3[0], degrees=(gaits.dr_R3C[self.trc2_ind] + self.R3P_offset[0]))
+        self.rs.position(self.R3[1], degrees=(gaits.dr_R3F[self.trc2_ind] + self.R3P_offset[1]))
+        self.rs.position(self.R3[2], degrees=(gaits.dr_R3T[self.trc2_ind] + self.R3P_offset[2]))
 
         # Save positions
-        self.R3P[0] = gaits.dr_R3C[self.trc2]
-        self.R3P[1] = gaits.dr_R3F[self.trc2]
-        self.R3P[2] = gaits.dr_R3T[self.trc2]
+        self.R3P[0] = gaits.dr_R3C[self.trc2_ind]
+        self.R3P[1] = gaits.dr_R3F[self.trc2_ind]
+        self.R3P[2] = gaits.dr_R3T[self.trc2_ind]
 
         # L2
-        self.ls.position(self.L2[0], degrees=(gaits.dr_L2C[self.trc2] + self.L2P_offset[0]))
-        self.ls.position(self.L2[1], degrees=(gaits.dr_L2F[self.trc2] + self.L2P_offset[1]))
-        self.ls.position(self.L2[2], degrees=(gaits.dr_L2T[self.trc2] + self.L2P_offset[2]))
+        self.ls.position(self.L2[0], degrees=(gaits.dr_L2C[self.trc2_ind] + self.L2P_offset[0]))
+        self.ls.position(self.L2[1], degrees=(gaits.dr_L2F[self.trc2_ind] + self.L2P_offset[1]))
+        self.ls.position(self.L2[2], degrees=(gaits.dr_L2T[self.trc2_ind] + self.L2P_offset[2]))
 
         # Save positions
-        self.L2P[0] = gaits.dr_L2C[self.trc2]
-        self.L2P[1] = gaits.dr_L2F[self.trc2]
-        self.L2P[2] = gaits.dr_L2T[self.trc2]
+        self.L2P[0] = gaits.dr_L2C[self.trc2_ind]
+        self.L2P[1] = gaits.dr_L2F[self.trc2_ind]
+        self.L2P[2] = gaits.dr_L2T[self.trc2_ind]
 
-        self.trc1 = loc_ind(inc, self.trc1)
-        self.trc2 = loc_ind(inc, self.trc2)
+        self.trc1_ind = loc_ind(inc, self.trc1_ind)
+        self.trc2_ind = loc_ind(inc, self.trc2_ind)
 
         # Delay between gait cycles with speed factor got from joystick
         sleep_ms(int(5 * (2.0 - max(dry, drx))))
@@ -553,68 +552,68 @@ class Hexapod:
     def diagonal_left_movement(self, drx, dry, inc):
         # Cycle 1
         # L1
-        self.ls.position(self.L1[0], degrees=(gaits.dl_L1C[self.trc1] + self.L1P_offset[0]))
-        self.ls.position(self.L1[1], degrees=(gaits.dl_L1F[self.trc1] + self.L1P_offset[1]))
-        self.ls.position(self.L1[2], degrees=(gaits.dl_L1T[self.trc1] + self.L1P_offset[2]))
+        self.ls.position(self.L1[0], degrees=(gaits.dl_L1C[self.trc1_ind] + self.L1P_offset[0]))
+        self.ls.position(self.L1[1], degrees=(gaits.dl_L1F[self.trc1_ind] + self.L1P_offset[1]))
+        self.ls.position(self.L1[2], degrees=(gaits.dl_L1T[self.trc1_ind] + self.L1P_offset[2]))
 
         # Save positions
-        self.L1P[0] = gaits.dl_L1C[self.trc1]
-        self.L1P[1] = gaits.dl_L1F[self.trc1]
-        self.L1P[2] = gaits.dl_L1T[self.trc1]
+        self.L1P[0] = gaits.dl_L1C[self.trc1_ind]
+        self.L1P[1] = gaits.dl_L1F[self.trc1_ind]
+        self.L1P[2] = gaits.dl_L1T[self.trc1_ind]
 
         # L3
-        self.ls.position(self.L3[0], degrees=(gaits.dl_L3C[self.trc1] + self.L3P_offset[0]))
-        self.ls.position(self.L3[1], degrees=(gaits.dl_L3F[self.trc1] + self.L3P_offset[1]))
-        self.ls.position(self.L3[2], degrees=(gaits.dl_L3T[self.trc1] + self.L3P_offset[2]))
+        self.ls.position(self.L3[0], degrees=(gaits.dl_L3C[self.trc1_ind] + self.L3P_offset[0]))
+        self.ls.position(self.L3[1], degrees=(gaits.dl_L3F[self.trc1_ind] + self.L3P_offset[1]))
+        self.ls.position(self.L3[2], degrees=(gaits.dl_L3T[self.trc1_ind] + self.L3P_offset[2]))
 
         # Save positions
-        self.L3P[0] = gaits.dl_L3C[self.trc1]
-        self.L3P[1] = gaits.dl_L3F[self.trc1]
-        self.L3P[2] = gaits.dl_L3T[self.trc1]
+        self.L3P[0] = gaits.dl_L3C[self.trc1_ind]
+        self.L3P[1] = gaits.dl_L3F[self.trc1_ind]
+        self.L3P[2] = gaits.dl_L3T[self.trc1_ind]
 
         # R2
-        self.rs.position(self.R2[0], degrees=(gaits.dl_R2C[self.trc1] + self.R2P_offset[0]))
-        self.rs.position(self.R2[1], degrees=(gaits.dl_R2F[self.trc1] + self.R2P_offset[1]))
-        self.rs.position(self.R2[2], degrees=(gaits.dl_R2T[self.trc1] + self.R2P_offset[2]))
+        self.rs.position(self.R2[0], degrees=(gaits.dl_R2C[self.trc1_ind] + self.R2P_offset[0]))
+        self.rs.position(self.R2[1], degrees=(gaits.dl_R2F[self.trc1_ind] + self.R2P_offset[1]))
+        self.rs.position(self.R2[2], degrees=(gaits.dl_R2T[self.trc1_ind] + self.R2P_offset[2]))
 
         # Save positions
-        self.R2P[0] = gaits.dl_R2C[self.trc1]
-        self.R2P[1] = gaits.dl_R2F[self.trc1]
-        self.R2P[2] = gaits.dl_R2T[self.trc1]
+        self.R2P[0] = gaits.dl_R2C[self.trc1_ind]
+        self.R2P[1] = gaits.dl_R2F[self.trc1_ind]
+        self.R2P[2] = gaits.dl_R2T[self.trc1_ind]
 
         # Cycle 2
         # R1
-        self.rs.position(self.R1[0], degrees=(gaits.dl_R1C[self.trc2] + self.R1P_offset[0]))
-        self.rs.position(self.R1[1], degrees=(gaits.dl_R1F[self.trc2] + self.R1P_offset[1]))
-        self.rs.position(self.R1[2], degrees=(gaits.dl_R1T[self.trc2] + self.R1P_offset[2]))
+        self.rs.position(self.R1[0], degrees=(gaits.dl_R1C[self.trc2_ind] + self.R1P_offset[0]))
+        self.rs.position(self.R1[1], degrees=(gaits.dl_R1F[self.trc2_ind] + self.R1P_offset[1]))
+        self.rs.position(self.R1[2], degrees=(gaits.dl_R1T[self.trc2_ind] + self.R1P_offset[2]))
 
         # Save positions
-        self.R1P[0] = gaits.dl_R1C[self.trc2]
-        self.R1P[1] = gaits.dl_R1F[self.trc2]
-        self.R1P[2] = gaits.dl_R1T[self.trc2]
+        self.R1P[0] = gaits.dl_R1C[self.trc2_ind]
+        self.R1P[1] = gaits.dl_R1F[self.trc2_ind]
+        self.R1P[2] = gaits.dl_R1T[self.trc2_ind]
 
         # R3
-        self.rs.position(self.R3[0], degrees=(gaits.dl_R3C[self.trc2] + self.R3P_offset[0]))
-        self.rs.position(self.R3[1], degrees=(gaits.dl_R3F[self.trc2] + self.R3P_offset[1]))
-        self.rs.position(self.R3[2], degrees=(gaits.dl_R3T[self.trc2] + self.R3P_offset[2]))
+        self.rs.position(self.R3[0], degrees=(gaits.dl_R3C[self.trc2_ind] + self.R3P_offset[0]))
+        self.rs.position(self.R3[1], degrees=(gaits.dl_R3F[self.trc2_ind] + self.R3P_offset[1]))
+        self.rs.position(self.R3[2], degrees=(gaits.dl_R3T[self.trc2_ind] + self.R3P_offset[2]))
 
         # Save positions
-        self.R3P[0] = gaits.dl_R3C[self.trc2]
-        self.R3P[1] = gaits.dl_R3F[self.trc2]
-        self.R3P[2] = gaits.dl_R3T[self.trc2]
+        self.R3P[0] = gaits.dl_R3C[self.trc2_ind]
+        self.R3P[1] = gaits.dl_R3F[self.trc2_ind]
+        self.R3P[2] = gaits.dl_R3T[self.trc2_ind]
 
         # L2
-        self.ls.position(self.L2[0], degrees=(gaits.dl_L2C[self.trc2] + self.L2P_offset[0]))
-        self.ls.position(self.L2[1], degrees=(gaits.dl_L2F[self.trc2] + self.L2P_offset[1]))
-        self.ls.position(self.L2[2], degrees=(gaits.dl_L2T[self.trc2] + self.L2P_offset[2]))
+        self.ls.position(self.L2[0], degrees=(gaits.dl_L2C[self.trc2_ind] + self.L2P_offset[0]))
+        self.ls.position(self.L2[1], degrees=(gaits.dl_L2F[self.trc2_ind] + self.L2P_offset[1]))
+        self.ls.position(self.L2[2], degrees=(gaits.dl_L2T[self.trc2_ind] + self.L2P_offset[2]))
 
         # Save positions
-        self.L2P[0] = gaits.dl_L2C[self.trc2]
-        self.L2P[1] = gaits.dl_L2F[self.trc2]
-        self.L2P[2] = gaits.dl_L2T[self.trc2]
+        self.L2P[0] = gaits.dl_L2C[self.trc2_ind]
+        self.L2P[1] = gaits.dl_L2F[self.trc2_ind]
+        self.L2P[2] = gaits.dl_L2T[self.trc2_ind]
 
-        self.trc1 = loc_ind(inc, self.trc1)
-        self.trc2 = loc_ind(inc, self.trc2)
+        self.trc1_ind = loc_ind(inc, self.trc1_ind)
+        self.trc2_ind = loc_ind(inc, self.trc2_ind)
 
         # Delay between gait cycles with speed factor got from joystick
         sleep_ms(int(5 * (2.0 - max(dry, drx))))
@@ -622,102 +621,97 @@ class Hexapod:
     def rotate_movement(self, drx, dry, inc):
         # Cycle 1
         # L1
-        self.ls.position(self.L1[0], degrees=(gaits.rm_L1C[self.trc1] + self.L1P_offset[0]))
-        self.ls.position(self.L1[1], degrees=(gaits.rm_L1F[self.trc1] + self.L1P_offset[1]))
-        self.ls.position(self.L1[2], degrees=(gaits.rm_L1T[self.trc1] + self.L1P_offset[2]))
+        self.ls.position(self.L1[0], degrees=(gaits.rm_L1C[self.trc1_ind] + self.L1P_offset[0]))
+        self.ls.position(self.L1[1], degrees=(gaits.rm_L1F[self.trc1_ind] + self.L1P_offset[1]))
+        self.ls.position(self.L1[2], degrees=(gaits.rm_L1T[self.trc1_ind] + self.L1P_offset[2]))
 
         # Save positions
-        self.L1P[0] = gaits.rm_L1C[self.trc1]
-        self.L1P[1] = gaits.rm_L1F[self.trc1]
-        self.L1P[2] = gaits.rm_L1T[self.trc1]
+        self.L1P[0] = gaits.rm_L1C[self.trc1_ind]
+        self.L1P[1] = gaits.rm_L1F[self.trc1_ind]
+        self.L1P[2] = gaits.rm_L1T[self.trc1_ind]
 
         # L3
-        self.ls.position(self.L3[0], degrees=(gaits.rm_L3C[self.trc1] + self.L3P_offset[0]))
-        self.ls.position(self.L3[1], degrees=(gaits.rm_L3F[self.trc1] + self.L3P_offset[1]))
-        self.ls.position(self.L3[2], degrees=(gaits.rm_L3T[self.trc1] + self.L3P_offset[2]))
+        self.ls.position(self.L3[0], degrees=(gaits.rm_L3C[self.trc1_ind] + self.L3P_offset[0]))
+        self.ls.position(self.L3[1], degrees=(gaits.rm_L3F[self.trc1_ind] + self.L3P_offset[1]))
+        self.ls.position(self.L3[2], degrees=(gaits.rm_L3T[self.trc1_ind] + self.L3P_offset[2]))
 
         # Save positions
-        self.L3P[0] = gaits.rm_L3C[self.trc1]
-        self.L3P[1] = gaits.rm_L3F[self.trc1]
-        self.L3P[2] = gaits.rm_L3T[self.trc1]
+        self.L3P[0] = gaits.rm_L3C[self.trc1_ind]
+        self.L3P[1] = gaits.rm_L3F[self.trc1_ind]
+        self.L3P[2] = gaits.rm_L3T[self.trc1_ind]
 
         # R2
-        self.rs.position(self.R2[0], degrees=(gaits.rm_R2C[self.trc1] + self.R2P_offset[0]))
-        self.rs.position(self.R2[1], degrees=(gaits.rm_R2F[self.trc1] + self.R2P_offset[1]))
-        self.rs.position(self.R2[2], degrees=(gaits.rm_R2T[self.trc1] + self.R2P_offset[2]))
+        self.rs.position(self.R2[0], degrees=(gaits.rm_R2C[self.trc1_ind] + self.R2P_offset[0]))
+        self.rs.position(self.R2[1], degrees=(gaits.rm_R2F[self.trc1_ind] + self.R2P_offset[1]))
+        self.rs.position(self.R2[2], degrees=(gaits.rm_R2T[self.trc1_ind] + self.R2P_offset[2]))
 
         # Save positions
-        self.R2P[0] = gaits.rm_R2C[self.trc1]
-        self.R2P[1] = gaits.rm_R2F[self.trc1]
-        self.R2P[2] = gaits.rm_R2T[self.trc1]
+        self.R2P[0] = gaits.rm_R2C[self.trc1_ind]
+        self.R2P[1] = gaits.rm_R2F[self.trc1_ind]
+        self.R2P[2] = gaits.rm_R2T[self.trc1_ind]
 
         # Cycle 2
         # R1
-        self.rs.position(self.R1[0], degrees=(gaits.rm_R1C[self.trc2] + self.R1P_offset[0]))
-        self.rs.position(self.R1[1], degrees=(gaits.rm_R1F[self.trc2] + self.R1P_offset[1]))
-        self.rs.position(self.R1[2], degrees=(gaits.rm_R1T[self.trc2] + self.R1P_offset[2]))
+        self.rs.position(self.R1[0], degrees=(gaits.rm_R1C[self.trc2_ind] + self.R1P_offset[0]))
+        self.rs.position(self.R1[1], degrees=(gaits.rm_R1F[self.trc2_ind] + self.R1P_offset[1]))
+        self.rs.position(self.R1[2], degrees=(gaits.rm_R1T[self.trc2_ind] + self.R1P_offset[2]))
 
         # Save positions
-        self.R1P[0] = gaits.rm_R1C[self.trc2]
-        self.R1P[1] = gaits.rm_R1F[self.trc2]
-        self.R1P[2] = gaits.rm_R1T[self.trc2]
+        self.R1P[0] = gaits.rm_R1C[self.trc2_ind]
+        self.R1P[1] = gaits.rm_R1F[self.trc2_ind]
+        self.R1P[2] = gaits.rm_R1T[self.trc2_ind]
 
         # R3
-        self.rs.position(self.R3[0], degrees=(gaits.rm_R3C[self.trc2] + self.R3P_offset[0]))
-        self.rs.position(self.R3[1], degrees=(gaits.rm_R3F[self.trc2] + self.R3P_offset[1]))
-        self.rs.position(self.R3[2], degrees=(gaits.rm_R3T[self.trc2] + self.R3P_offset[2]))
+        self.rs.position(self.R3[0], degrees=(gaits.rm_R3C[self.trc2_ind] + self.R3P_offset[0]))
+        self.rs.position(self.R3[1], degrees=(gaits.rm_R3F[self.trc2_ind] + self.R3P_offset[1]))
+        self.rs.position(self.R3[2], degrees=(gaits.rm_R3T[self.trc2_ind] + self.R3P_offset[2]))
 
         # Save positions
-        self.R3P[0] = gaits.rm_R3C[self.trc2]
-        self.R3P[1] = gaits.rm_R3F[self.trc2]
-        self.R3P[2] = gaits.rm_R3T[self.trc2]
+        self.R3P[0] = gaits.rm_R3C[self.trc2_ind]
+        self.R3P[1] = gaits.rm_R3F[self.trc2_ind]
+        self.R3P[2] = gaits.rm_R3T[self.trc2_ind]
 
         # L2
-        self.ls.position(self.L2[0], degrees=(gaits.rm_L2C[self.trc2] + self.L2P_offset[0]))
-        self.ls.position(self.L2[1], degrees=(gaits.rm_L2F[self.trc2] + self.L2P_offset[1]))
-        self.ls.position(self.L2[2], degrees=(gaits.rm_L2T[self.trc2] + self.L2P_offset[2]))
+        self.ls.position(self.L2[0], degrees=(gaits.rm_L2C[self.trc2_ind] + self.L2P_offset[0]))
+        self.ls.position(self.L2[1], degrees=(gaits.rm_L2F[self.trc2_ind] + self.L2P_offset[1]))
+        self.ls.position(self.L2[2], degrees=(gaits.rm_L2T[self.trc2_ind] + self.L2P_offset[2]))
 
         # Save positions
-        self.L2P[0] = gaits.rm_L2C[self.trc2]
-        self.L2P[1] = gaits.rm_L2F[self.trc2]
-        self.L2P[2] = gaits.rm_L2T[self.trc2]
+        self.L2P[0] = gaits.rm_L2C[self.trc2_ind]
+        self.L2P[1] = gaits.rm_L2F[self.trc2_ind]
+        self.L2P[2] = gaits.rm_L2T[self.trc2_ind]
 
-        self.trc1 = loc_ind(inc, self.trc1)
-        self.trc2 = loc_ind(inc, self.trc2)
+        self.trc1_ind = loc_ind(inc, self.trc1_ind)
+        self.trc2_ind = loc_ind(inc, self.trc2_ind)
 
         # Delay between gait cycles with speed factor got from joystick
         sleep_ms(int(5 * (2.0 - max(drx, dry))))
 
-    # TODO: Write body elevation movement
-    """
     def body_elevation(self, rise):
-        # If rise is True, the body elevation will rise
-        # If rise is False, the body elevation will lower
-        gaits.em(rise)
-
         # Only the Femur and Tarsus is moved
         # Move FEMUR on left side
-        self.ls.position(self.L1[1], degrees=(gaits.vm_L1F[gaits.vm.i] + self.L1P_offset[1]))
-        self.ls.position(self.L2[1], degrees=(gaits.vm_L2F[gaits.vm.i] + self.L2P_offset[1]))
-        self.ls.position(self.L3[1], degrees=(gaits.vm_L3F[gaits.vm.i] + self.L3P_offset[1]))
+        self.ls.position(self.L1[1], degrees=(gaits.em_L1F[self.rt_ind] + self.L1P_offset[1]))
+        self.ls.position(self.L2[1], degrees=(gaits.em_L2F[self.rt_ind] + self.L2P_offset[1]))
+        self.ls.position(self.L3[1], degrees=(gaits.em_L3F[self.rt_ind] + self.L3P_offset[1]))
 
         # Move FEMUR on right side
-        self.rs.position(self.R1[1], degrees=(gaits.vm_R1F[gaits.vm.i] + self.R1P_offset[1]))
-        self.rs.position(self.R2[1], degrees=(gaits.vm_R2F[gaits.vm.i] + self.R2P_offset[1]))
-        self.rs.position(self.R3[1], degrees=(gaits.vm_R3F[gaits.vm.i] + self.R3P_offset[1]))
+        self.rs.position(self.R1[1], degrees=(gaits.em_R1F[self.rt_ind] + self.R1P_offset[1]))
+        self.rs.position(self.R2[1], degrees=(gaits.em_R2F[self.rt_ind] + self.R2P_offset[1]))
+        self.rs.position(self.R3[1], degrees=(gaits.em_R3F[self.rt_ind] + self.R3P_offset[1]))
 
         # Move Tarsus on left side
-        self.ls.position(self.L1[2], degrees=(gaits.vm_L1T[gaits.vm.i] + self.L1P_offset[2]))
-        self.ls.position(self.L2[2], degrees=(gaits.vm_L2T[gaits.vm.i] + self.L2P_offset[2]))
-        self.ls.position(self.L3[2], degrees=(gaits.vm_L3T[gaits.vm.i] + self.L3P_offset[2]))
+        self.ls.position(self.L1[2], degrees=(gaits.em_L1T[self.rt_ind] + self.L1P_offset[2]))
+        self.ls.position(self.L2[2], degrees=(gaits.em_L2T[self.rt_ind] + self.L2P_offset[2]))
+        self.ls.position(self.L3[2], degrees=(gaits.em_L3T[self.rt_ind] + self.L3P_offset[2]))
 
         # Move Tarsus on right side
-        self.rs.position(self.R1[2], degrees=(gaits.vm_R1T[gaits.vm.i] + self.R1P_offset[2]))
-        self.rs.position(self.R2[2], degrees=(gaits.vm_R2T[gaits.vm.i] + self.R2P_offset[2]))
-        self.rs.position(self.R3[2], degrees=(gaits.vm_R3T[gaits.vm.i] + self.R3P_offset[2]))
+        self.rs.position(self.R1[2], degrees=(gaits.em_R1T[self.rt_ind] + self.R1P_offset[2]))
+        self.rs.position(self.R2[2], degrees=(gaits.em_R2T[self.rt_ind] + self.R2P_offset[2]))
+        self.rs.position(self.R3[2], degrees=(gaits.em_R3T[self.rt_ind] + self.R3P_offset[2]))
+
+        rot_ind(rise, self.rt_ind)
 
         sleep_ms(5)
-    """
 
     def yaw_rotation(self, lx=0, ly=0):
         # TODO: Write Hexapod rotation around yaw axis
