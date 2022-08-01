@@ -1,6 +1,6 @@
 import ustruct
 import time
-
+from machine import i2c
 
 class PCA9685:
     def __init__(self, i2c, address=0x40):

@@ -45,15 +45,19 @@ def sub_cb(topic, msg):
         # Check for right joystick axis and tripod gait
         if topic == b'R' and Hexapod.gait == b'TR':
             if msg[3] == 44:
-                Hexapod.gait_tripod(rx=msg[:3], ry=msg[4:])
+                Hexapod.gait_tripod("loc", rx=msg[:3], ry=msg[4:], sleep=10)
             else:
-                Hexapod.gait_tripod(rx=msg[:4], ry=msg[5:])
+                Hexapod.gait_tripod("loc", rx=msg[:4], ry=msg[5:], sleep=10)
         # Check for right joystick axis and metachronal gait
         elif topic == b'R' and Hexapod.gait == b'MT':
+            # TODO: Write metachronal gait
+            pass
+        # Check for left joystick axis and tripod gait
+        if topic == b'R' and Hexapod.gait == b'TR':
             if msg[3] == 44:
-                Hexapod.gait_metachronal(rx=msg[:3], ry=msg[4:])
+                Hexapod.gait_tripod("rot", rx=msg[:3], ry=msg[4:], sleep=10)
             else:
-                Hexapod.gait_metachronal(rx=msg[:4], ry=msg[5:])
+                Hexapod.gait_tripod("rot", rx=msg[:4], ry=msg[5:], sleep=10)
 
         # Check for left joystick axis
         elif topic == b'L':

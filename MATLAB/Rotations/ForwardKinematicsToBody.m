@@ -1,21 +1,28 @@
-function points = ForwardKinematics(angles, d, leg)
-P0 = [0; 0; 0; 1]; % Starting point
+function points = ForwardKinematicsToBody(angles, d, leg)
+PS = [0; 0; 0; 1]; % Starting point
 
 %% Calculate for given leg
 if leg == "R1"
     offset = 45;
+    r0 = 112.13;
 elseif leg == "R2"
     offset = 0;
+    r0 = 79.8;
 elseif leg == "R3"
     offset = -45;
+    r0 = 112.13;
 elseif leg == "L1"
     offset = 135;
+    r0 = 112.13;
 elseif leg == "L2"
     offset = 180;
+    r0 = 79.8;
 elseif leg == "L3"
     offset = 225;
+    r0 = 112.13;
 else
     offset = 0;
+    r0 = 79.8;
 end
 
 %% Get joint angles
@@ -43,6 +50,13 @@ d4 = 96.548;
 %% DH Table
 % H = Trans_z(d_i) * Rot_z(theta_i) * Trans_x(r_i) * Rot_x(alpha_i)
 % Aplha is already calculated here
+
+% Center of body
+A0 =  @(theta) [cos(deg2rad(theta)) 0 0 r0.*cos(deg2rad(theta));
+             sin(deg2rad(theta)) 0 0 r0.*sin(deg2rad(theta));
+      0 0 1 0;
+      0 0 0 1];
+
 A1 = @(theta) [cos(deg2rad(theta)) 0 sin(deg2rad(theta)) r1.*cos(deg2rad(theta));
              sin(deg2rad(theta)) 0 -cos(deg2rad(theta)) r1.*sin(deg2rad(theta));
              0 1 0 d1;
@@ -69,12 +83,14 @@ A4 = @(d) [1 0 0 d4;
 points = [];
 
 for i = 1 : size(theta0, 1)
-P1 = A1(theta0(i) + offset) * P0;
-P2 = A1(theta0(i) + offset) * A2(theta1(i)) * P0;
-P3 = A1(theta0(i) + offset) * A2(theta1(i)) * A3(theta2(i)) * P0;
-P4 = A1(theta0(i) + offset) * A2(theta1(i)) * A3(theta2(i)) * A4(d(i)) * P0;
 
-points = [points; P1, P2, P3, P4];
+P0 = A0(offset) * PS;
+P1 = A0(offset) * A1(theta0(i)) * PS;
+P2 = A0(offset) * A1(theta0(i)) * A2(theta1(i)) * PS;
+P3 = A0(offset) * A1(theta0(i)) * A2(theta1(i)) * A3(theta2(i)) * PS;
+P4 = A0(offset) * A1(theta0(i)) * A2(theta1(i)) * A3(theta2(i)) * A4(d(i)) * PS;
+
+points = [points; P0, P1, P2, P3, P4];
 end
 
 end

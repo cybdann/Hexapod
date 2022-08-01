@@ -21,11 +21,9 @@ def control_thread():
             # Check for right joystick axis and tripod gait
             if last_topic == b'R' and Hexapod.gait == b'TR':
                 if last_msg[3] == 44:
-                    Hexapod.gait_tripod(rx=last_msg[:3], ry=last_msg[4:])
-                    # print("RX=" + str(last_msg[:3]) + "| RY=" + str(last_msg[4:]))
+                    Hexapod.gait_tripod("od", last_msg[:3], last_msg[4:], 70, None)
                 else:
-                    Hexapod.gait_tripod(rx=last_msg[:4], ry=last_msg[5:])
-                    # print("RX=" + str(last_msg[:4]) + "| RY=" + str(last_msg[5:]))
+                    Hexapod.gait_tripod("od", last_msg[:4], last_msg[5:], 70, None)
             # Check for right joystick axis and metachronal gait
             elif last_topic == b'R' and Hexapod.gait == b'MT':
                 if msg[3] == 44:
@@ -35,11 +33,11 @@ def control_thread():
 
             # Check for left joystick axis
             elif last_topic == b'L':
-                # TODO: Yaw rotation (NOT COMPLETED)
+                print(last_msg)
                 if last_msg[3] == 44:
-                    Hexapod.yaw_rotation(lx=last_msg[:3], ly=last_msg[4:])
+                    Hexapod.gait_tripod("rot", last_msg[:3], last_msg[4:], 50, None)
                 else:
-                    Hexapod.yaw_rotation(lx=last_msg[:4], ly=last_msg[5:])
+                    Hexapod.gait_tripod("rot", last_msg[:4], last_msg[5:], 50, None)
                 pass
 
 
@@ -68,12 +66,35 @@ def sub_cb(topic, msg):
 
     # Check for incoming status messages
     if topic[0] == 83:
-        Hexapod.set_status(topic)
-        print("Status: " + str(msg))
+        print(str(topic) + ": " + str(msg))
+
+        # SHUTDOWN Hexapod
+        if topic[1] == 77:
+            client.publish("SX", "0", retain=True)
+            CONV.value(0)
+            VCC.value(0)
+            return
+
+        Hexapod.set_status(topic, msg)
+        client.publish("SX", "1", retain=True)
         return
 
+    # Control Mode A is selected
+    if Hexapod.mode == b'A':
+        # Vertical movement, forwards
+        if last_topic == b'DU':
+            Hexapod.gait_tripod("od", 0.0, 1.0, 70, None)
+        # Vertical movement, backwards
+        elif last_topic == b'DD':
+            Hexapod.gait_tripod("od", 0.0, -1.0, 70, None)
+        # Horizontal movement,
+        elif last_topic == b'DR':
+            Hexapod.gait_tripod("od", 1.0, 0.0, 70, None)
+        # Roll Hexapod body to the left
+        elif last_topic == b'DL':
+            Hexapod.gait_tripod("od", -1.0, 0.0, 70, None)
     # Control Mode B is selected
-    if Hexapod.mode == b'B':
+    elif Hexapod.mode == b'B':
         # Raise Hexapod body height
         if last_topic == b'DU':
             Hexapod.body_elevation(rise=True)
@@ -115,7 +136,7 @@ def restart_and_reconnect():
 
 
 # MQTT network credentials
-mqtt_server = '192.168.1.101'
+mqtt_server = '172.16.0.104'
 client_id = ubinascii.hexlify(machine.unique_id())
 
 # MQTT topic subscription and publishing
@@ -131,18 +152,23 @@ last_msg = None
 
 # Hexapod control
 Hexapod = Hexapod()
-Hexapod.set_default_position()
+
+# Enable PWM board and buck converter
+VCC = Pin(13, Pin.OUT)
+CONV = Pin(12, Pin.OUT)
 
 # Connect to MQTT network before looping
 client = None
 
 try:
     client = connect_and_subscribe()
+    print("MQTT client connection successful")
 except OSError as e:
     restart_and_reconnect()
+    print("MQTT client connection unsuccessful")
 
 # Send Hexapod READY msg to broker
-client.publish("READY", "1", retain=True)
+client.publish("SX", "1", retain=True)
 
 # Init robot control thread (Core 2)
 c_thread = _thread.start_new_thread(control_thread, ())

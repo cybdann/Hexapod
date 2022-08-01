@@ -23,9 +23,9 @@ step_angle = pi / halfsteps;
 coordsV = [];
 
 %% Start coordinates
-x_start = 128.8 * cos(deg2rad(offset));
-y_start = 128.8 * sin(deg2rad(offset));
-z_start = -158.6;
+x_start = 127.5 * cos(deg2rad(offset));
+y_start = 127.5 * sin(deg2rad(offset));
+z_start = -160.1;
 
 %% Straight line - Y changes
 for i = 1 : halfsteps

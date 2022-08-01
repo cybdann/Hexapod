@@ -1,4 +1,4 @@
-function coordsR = RotateMovement(steps, x_radius, y_radius, z_radius, leg)
+function coordsR = RollRotation(steps, x_radius, z_radius, leg)
 % Default position = [128.8, 128.8, -158.6]
 %% Calculate for given leg
 if leg == "R1"
@@ -29,9 +29,13 @@ z_start = -158.6;
 
 %% Semi circle in 3D space
 for i = 1 : halfsteps
-    angle = pi/2 - step_angle*i;
-    coordsR = [coordsR; [x_start + x_radius * cos(angle + deg2rad(offset)), ...
-                         y_start + y_radius * sin(angle + deg2rad(offset)), ...
-                         z_start + z_radius * cos(angle)]];
+    angle = pi - step_angle*i;
+    coordsR = [coordsR; [x_start + x_radius * cos(angle), ...
+                         y_start, ...
+                         z_start + z_radius * sin(angle) - z_radius]];
 end
+
+% Start from 90 degrees
+coordsR = [coordsR(ceil(halfsteps/2) : halfsteps, :); coordsR(1: ceil(halfsteps/2) - 1, :)];
+        
 end
