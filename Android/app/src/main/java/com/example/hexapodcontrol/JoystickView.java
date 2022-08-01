@@ -216,7 +216,7 @@ public class JoystickView extends SurfaceView implements SurfaceHolder.Callback,
             while (nonZeroValue) {
                 // Delay between messages
                 try {
-                    Thread.sleep(20);
+                    Thread.sleep(40);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

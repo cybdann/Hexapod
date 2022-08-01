@@ -36,7 +36,7 @@ public class ControllerActivity extends AppCompatActivity implements JoystickVie
     private LottieAnimationView batteryLevel;
     private static MQTTModule mqttModule;
 
-    private final static String URI = "tcp://192.168.1.101:1883";
+    private final static String URI = "tcp://172.16.0.104:1883";
     private final static String TAG = "JoystickActivity";
 
     private final Handler handler = new Handler();
@@ -58,7 +58,7 @@ public class ControllerActivity extends AppCompatActivity implements JoystickVie
     private boolean modeA = true;         // Default control mode
     private boolean modeB = false;
     private boolean isESCOn = true;       // ESC is ON by default, OFF when mode B is selected
-    private boolean isSitting = false;
+    private boolean isSitting = true;
 
     // Alerts
     private Dialog dialogMQTT;
@@ -85,7 +85,6 @@ public class ControllerActivity extends AppCompatActivity implements JoystickVie
 
         // Check MQTT network connection
         dialogMQTT = alertMQTT();
-        dialogWAITING = alertWAITING();
         dialogSTATUS = alertWAITING();
         dialogBATTERY = alertBATTERY();
 
@@ -107,7 +106,7 @@ public class ControllerActivity extends AppCompatActivity implements JoystickVie
         // Waiting for the Hexapod to be ready
 
         handler.post(() -> {
-            dialogWAITING.show();
+            dialogSTATUS.show();
 
             // Hide the status bar.
             View decorView1 = getWindow().getDecorView();
@@ -204,7 +203,7 @@ public class ControllerActivity extends AppCompatActivity implements JoystickVie
         startActivity(intent);
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "ClickableViewAccessibility", "UseCompatLoadingForDrawables"})
     public void stopStartServos(View v) {
         Button bt_stop_start = findViewById(R.id.bt_stop_start);
 
@@ -221,26 +220,19 @@ public class ControllerActivity extends AppCompatActivity implements JoystickVie
             startActivity(intent);
         }
 
-        if(bt_stop_start.getText().equals("STOP")) {
-            @SuppressLint("UseCompatLoadingForDrawables")
-            Drawable d = getResources().getDrawable(R.drawable.button_b);
+        bt_stop_start.setOnTouchListener((view, motionEvent) -> {
 
-            bt_stop_start.setBackground(d);
-            bt_stop_start.setText("START");
-            bt_stop_start.setTextSize(20);
+            if(motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                bt_stop_start.setBackground(getResources().getDrawable(R.drawable.button_a_shaded));
+                mqttModule.publishMessage("SM", "1", 1, false);
+            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                bt_stop_start.setBackground(getResources().getDrawable(R.drawable.button_a));
+            }
 
-            mqttModule.publishMessage("SS", "1", 1, false);
-        }
-        else {
-            @SuppressLint("UseCompatLoadingForDrawables")
-            Drawable d = getResources().getDrawable(R.drawable.button_a);
+            return false;
+        });
 
-            bt_stop_start.setBackground(d);
-            bt_stop_start.setText("STOP");
-            bt_stop_start.setTextSize(25);
 
-            mqttModule.publishMessage("SS", "0", 1, false);
-        }
     }
 
     @SuppressLint({"ClickableViewAccessibility", "UseCompatLoadingForDrawables", "SetTextI18n"})
@@ -753,20 +745,6 @@ public class ControllerActivity extends AppCompatActivity implements JoystickVie
                     return;
                 }
 
-                if(Objects.equals(mqttModule.getTopics().get("READY"), "1")) {
-
-                    // Notify the user about the status of the Hexapod
-                    handler.post(() -> {
-                        dialogWAITING.dismiss();
-
-                        // Hide the status bar.
-                        View decorView = getWindow().getDecorView();
-                        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-                        decorView.setSystemUiVisibility(uiOptions);
-                    });
-
-                }
-
                 // Check for status update
                 if(Objects.equals(mqttModule.getTopics().get("SX"), "1")) {
                     mqttModule.getTopics().replace("SX", "");
@@ -780,6 +758,11 @@ public class ControllerActivity extends AppCompatActivity implements JoystickVie
                         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
                         decorView.setSystemUiVisibility(uiOptions);
                     });
+                }
+                else if(Objects.equals(mqttModule.getTopics().get("SX"), "0")) {
+                    mqttModule.getTopics().replace("SX", "");
+
+                    handler.post(() -> dialogSTATUS.show());
 
                 }
 
@@ -823,7 +806,7 @@ public class ControllerActivity extends AppCompatActivity implements JoystickVie
             while(dlp) {
                 // Delay between messages
                 try {
-                    Thread.sleep(20);
+                    Thread.sleep(35);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

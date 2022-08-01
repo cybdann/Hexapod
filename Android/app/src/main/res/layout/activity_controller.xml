@@ -529,9 +529,9 @@
                         android:id="@+id/bt_face_T"
                         android:layout_width="70dp"
                         android:layout_height="40dp"
-                        android:background="@drawable/button_sit"
+                        android:background="@drawable/button_up"
                         android:fontFamily="@font/azonix"
-                        android:text="SIT"
+                        android:text="UP"
                         android:textColor="#FAFAFA"
                         android:textSize="25sp"/>
                 </LinearLayout>
